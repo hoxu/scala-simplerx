@@ -28,8 +28,8 @@ class EventSource[A] { self =>
     // Return Subscription that unsubscribes from this and the chained Subscription
     new Subscription[A](this, callback) {
       override def unsubscribe() = {
-        chainedSubscription.foreach(_.unsubscribe())
         outerSubscription.unsubscribe()
+        chainedSubscription.foreach(_.unsubscribe())
       }
     }
   }

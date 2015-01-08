@@ -36,4 +36,18 @@ class ReactivePropertyTest extends FunSuite with BeforeAndAfter {
     subscription.unsubscribe()
     assert(prop.es.callbacks.length == 0)
   }
+
+  test("chainedSubscription gives initial subscription properly") {
+    class Duck {
+      val quacks = new EventSource[String]
+    }
+    val duckProperty = new ReactiveProperty[Duck](new Duck())
+
+    var quacks = 0
+    duckProperty.chainedSubscription(duck => duck.quacks.subscribe(quack => quacks += 1))
+
+    duckProperty.value.quacks.emit("quack")
+
+    assert(quacks == 1)
+  }
 }

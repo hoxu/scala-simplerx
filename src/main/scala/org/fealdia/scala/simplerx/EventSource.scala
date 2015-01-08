@@ -14,9 +14,8 @@ class EventSource[A] { self =>
   /**
    * target.chainedSubscription(target => target.health.subscribe(...)))
    */
-  def chainedSubscription(chainedCallback: A => Subscription[_]): Subscription[A] = {
-    // TODO ReactiveProperty would have initial value that we could call original callback with
-    var chainedSubscription: Option[Subscription[_]] = None
+  def chainedSubscription(chainedCallback: A => Subscription[_], initial: Option[A] = None): Subscription[A] = {
+    var chainedSubscription: Option[Subscription[_]] = initial.map(initial => chainedCallback(initial))
 
     // Update Subscription every time called
     def callback(a: A): Unit = {
